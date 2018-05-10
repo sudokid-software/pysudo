@@ -5,7 +5,7 @@ import random
 import asyncio_redis as redis
 import aiohttp
 
-from irc import IRC
+import irc
 
 
 class CustomSleep:
@@ -35,26 +35,34 @@ class CustomSleep:
 
 async def main():
     print('starting')
-    r = await redis.Connection.create(host='localhost', port=6379)
-    class_call = CustomSleep(r)
+    reader, writer = await asyncio.open_connection(
+        SERVER, PORT, loop=asyncio.get_event_loop())
 
-    asyncio.ensure_future(class_call.print_multiple_msg('Testing', 10))
-    asyncio.ensure_future(class_call.print_chatters())
+    password = f'PASS {AUTH}\r\n'.encode()
+    nick = f'NICK {NICK}\r\n'.encode()
+    channel = f'JOIN #{NICK}\r\n'.encode()
 
-    counter = await class_call.r.get('counter')
-    print('Counter:', counter)
+    writer.write(password)
+    writer.write(nick)
+    writer.write(channel)
+
+    while True:
+        raw_msg = (await reader.readline()).decode().strip()
+        print(raw_msg)
+
+        if not raw_msg:
+            continue
+
+        if raw_msg == 'PING :tmi.twitch.tv':
+            writer.write(b'PONG :tmi.twitch.tv\r\n')
 
 
 if __name__ == '__main__':
     AUTH = os.environ.get('TWITCH_AUTH', None)
     SERVER = 'irc.chat.twitch.tv'
     PORT = 6667
-    CHANNEL = 'sudokid'
     NICK = 'sudokid'
 
-    irc = IRC(SERVER, PORT, NICK, CHANNEL, AUTH)
-
-
     loop = asyncio.get_event_loop()
-    loop.create_task(main())
+    loop.run_until_complete(main())
     loop.run_forever()
