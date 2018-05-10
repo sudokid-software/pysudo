@@ -1,36 +1,13 @@
-import os
 import asyncio
+import logging
 import random
 
-import asyncio_redis as redis
-import aiohttp
+from chatters import get_chatters
+from config import AUTH, SERVER, PORT, NICK, PROJECT
+from irc import send_msg, parse_raw_msg
 
-import irc
 
-
-class CustomSleep:
-    def __init__(self, r):
-        self.r = r
-
-    async def print_msg(self, msg):
-        timer = random.randrange(10)
-        await asyncio.sleep(timer)
-        print(msg, timer)
-
-    async def print_multiple_msg(self, msg, number):
-        print(f'starting print_msg {msg} {number}')
-        for i in range(number):
-            asyncio.ensure_future(self.print_msg(f'{msg} - {i}'))
-
-    @staticmethod
-    async def print_chatters():
-        async with aiohttp.ClientSession() as session:
-            async with session.get('http://tmi.twitch.tv/group/user/sudokid/chatters', timeout=25) as resp:
-                print(resp.status)
-                if resp.status != 200:
-                    print(await resp.text())
-                else:
-                    print(await resp.json())
+logger = logging.getLogger(__name__)
 
 
 async def main():
@@ -46,23 +23,44 @@ async def main():
     writer.write(nick)
     writer.write(channel)
 
+    counter = 0
+
     while True:
         raw_msg = (await reader.readline()).decode().strip()
-        print(raw_msg)
+
+        counter += 1
+        if counter == 10:
+            asyncio.get_event_loop().create_task(
+                get_chatters())
+            counter = 0
 
         if not raw_msg:
             continue
 
         if raw_msg == 'PING :tmi.twitch.tv':
             writer.write(b'PONG :tmi.twitch.tv\r\n')
+            continue
+
+        try:
+            user, msg = parse_raw_msg(raw_msg)
+            print(user, msg)
+        except ValueError:
+            continue
+
+        if msg.startswith('!crashcode'):
+            response = random.choice([
+                'You can not crash me!',
+                'You man not crash me!'
+            ])
+            send_msg(response, writer, NICK)
+        elif msg.startswith('!project'):
+            send_msg(PROJECT, writer, NICK)
 
 
 if __name__ == '__main__':
-    AUTH = os.environ.get('TWITCH_AUTH', None)
-    SERVER = 'irc.chat.twitch.tv'
-    PORT = 6667
-    NICK = 'sudokid'
-
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-    loop.run_forever()
+    try:
+        loop.run_until_complete(main())
+    except KeyboardInterrupt:
+        print('exiting')
+    loop.close()
