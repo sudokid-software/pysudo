@@ -5,4 +5,3 @@ AUTH = environ.get('TWITCH_AUTH', None)
 SERVER = 'irc.chat.twitch.tv'
 PORT = 443
 NICK = 'sudokid'
-TESTING = 'I"M A THING!!!'
