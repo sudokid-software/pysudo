@@ -20,6 +20,8 @@ if __name__ == '__main__':
 
     del AUTH
 
-    loop.run_until_complete(coro)
-    loop.run_forever()
-    loop.close()
+    try:
+        loop.run_until_complete(coro)
+        loop.run_forever()
+    finally:
+        loop.close()
