@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    client_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+    client_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     client_context.get_ciphers()
 
     coro = loop.create_connection(

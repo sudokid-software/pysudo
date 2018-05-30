@@ -1,8 +1,14 @@
 from time import sleep
 import secrets
+import urllib
 
 from http_lib import get
 import response_msgs
+
+
+# TODO Add command to get top results of urban dictionary
+# TODO Add command to lookup urban dictionary result !maybe filtering?
+# TODO Maybe add ubereats
 
 
 def suggest(irc, _user, msg):
@@ -13,7 +19,7 @@ def suggest(irc, _user, msg):
 
 
 def reset_suggestions(irc, user, _msg):
-    if not irc.check_user(user):
+    if irc.check_user(user):
         return
 
     irc.suggestions = []
@@ -21,7 +27,7 @@ def reset_suggestions(irc, user, _msg):
 
 
 def vote_reset(irc, user, _msg):
-    if not irc.check_user(user):
+    if irc.check_user(user):
         return
 
     irc.viewers_voted = set()
@@ -58,7 +64,7 @@ def vote(irc, user, msg):
 
 
 def end_vote(irc, user, _msg):
-    if not irc.check_user(user):
+    if irc.check_user(user):
         return
 
     vote = None
@@ -72,7 +78,7 @@ def end_vote(irc, user, _msg):
 
 
 def random_viewer(irc, user, _msg):
-    if not irc.check_user(user):
+    if irc.check_user(user):
         print(f'{user} are not a valid mod')
         return
 
@@ -88,7 +94,7 @@ def random_viewer(irc, user, _msg):
 
 def update_viewers(irc, user, _msg):
     print(user)
-    if not irc.check_user(user):
+    if irc.check_user(user):
         return
 
     response = None
@@ -147,3 +153,25 @@ def roll(irc, _user, _msg):
     irc.send_msg(
         'You rolled a ' +
         str(secrets.randbelow(101)))
+
+
+def urban_dict(irc, user, msg):
+    if irc.check_user(user):
+        return irc.send_msg('Mistakes were made!')
+
+    try:
+        term = urllib.parse.quote(msg.split(' ', 1)[1])
+    except IndexError:
+        return irc.send_msg('You did not provide a term to look up!')
+
+    response = get('http://api.urbandictionary.com/v0/define?term=' + term)
+
+    try:
+        definition = response.get('list', [])[0].get('definition', None)
+    except IndexError:
+        return irc.send_msg(f'No records found for the term {term}!')
+
+    if definition is None:
+        return irc.send_msg(f'No records found for the term {term}!')
+
+    irc.send_msg(f'@{user} - Definition: {definition}')

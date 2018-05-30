@@ -12,4 +12,5 @@ commands = {
     'add_mod': add_mod,
     'remove_mod': remove_mod,
     'roll': roll,
+    'urban_dict': urban_dict,
 }

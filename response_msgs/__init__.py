@@ -1,5 +1,3 @@
-# TODO Add command to get top results of urban dictionary
-# TODO Add command to lookup urban dictionary result !maybe filtering?
 
 addmod = '@{user} has been added to mod list!'
 
@@ -24,21 +22,21 @@ canned_response = {
         'https://github.com/sudokid-stream',
     ),
     'babby': (
-        '@Staghouse is a sexy babby go follow him at https://twitch.tv/staghouse'
+        '@Staghouse is a sexy babby go follow him at https://twitch.tv/staghouse',
     ),
     'help': (
         'You may type any of the following commands!',
         '!help - Will print this help message back.',
         '!discord - Will provide a link to the discord server.',
-        '!project - Will provide back the project details.'
+        '!project - Will provide back the project details.',
     ),
     'Initiate_Self_Destruction_Protocol_803': (
         'Attempting to delete @Staghouse\'s channel',
-        'Failed to delete @Staghouse\'s channel. It feels bad! :('
+        'Failed to delete @Staghouse\'s channel. It feels bad! :(',
     ),
     'InitiateSelfDestructionProtocol803': (
         'Attempting to delete @Staghouse\'s channel',
-        'Failed to delete @Staghouse\'s channel. It feels bad! :('
+        'Failed to delete @Staghouse\'s channel. It feels bad! :(',
     ),
     'addmod': (
         '@{user} has been added to mod list!',
@@ -47,11 +45,23 @@ canned_response = {
         'T1 sudoki1D , T2 sudoki1KnowsNothing',
     ),
     'atom': (
-        ('Atom is a bot created by Ceaser_Gaming and is sometimes '
+        ('Atom is a bot created by !Ceaser_Gaming and is sometimes '
          'confused with the much less popular TextEditor Atom created by GitHub.'),
     ),
     'barney': (
         'Thanos - Did someone say my name sudoki1KnowsNothing',
+    ),
+    'neceros': (
+        '{user}, I\'ve been alive for a long time LUL I know many things',
+    ),
+    'spam': (
+        'GD I forgot the `,` again!!',
+    ),
+    'the_british': (
+        'THE BRITISH ARE COMING!! THE BRITISH ARE COMING!!',
+    ),
+    'send_bits': (
+        'cheer100',
     )
 }
 
@@ -86,5 +96,3 @@ random_response = {
         "Hey Vision, where you at cuz? BibleThump BibleThump "
     ),
 }
-
-
