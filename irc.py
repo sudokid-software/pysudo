@@ -53,9 +53,9 @@ class IRCClientProtocol(asyncio.Protocol):
         transport.write(nick)
         transport.write(channel)
 
-        transport.write(b'CAP REQ :twitch.tv/membership\r\n')
-        transport.write(b'CAP REQ :twitch.tv/tags\r\n')
-        transport.write(b'CAP REQ :twitch.tv/commands\r\n')
+        # transport.write(b'CAP REQ :twitch.tv/membership\r\n')
+        # transport.write(b'CAP REQ :twitch.tv/tags\r\n')
+        # transport.write(b'CAP REQ :twitch.tv/commands\r\n')
 
         commands['update_viewers'](self, self.nick, '')
 
